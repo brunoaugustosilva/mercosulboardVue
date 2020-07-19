@@ -19,7 +19,7 @@ export default {
 <style scoped>
 .message {
   padding: 12px 16px;
-  position: absolute;
+  position: fixed;
   border-radius: 8px;
   font-family: "Segoe UI Light";
   color: #fff;

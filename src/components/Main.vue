@@ -1,41 +1,52 @@
 <template>
   <div class="main">
-    <h1>MERCOSUL BOARD</h1>
-    <div class="content">
+    <header class="header" role="banner">
+      <hgroup>
+        <h1 class="text-center">MERCOSUL BOARD</h1>
+        <h2 class="text-center">
+          Adding mercosul plates for
+          <mark>your country!</mark>
+        </h2>
+      </hgroup>
+    </header>
+    <main class="content">
       <div class="content_container">
-        <Board
-          :country="board.country"
-          :letter="board.letter"
-          :color="board.color"
-          :flag="board.flag"
-        />
+        <transition name="slide-fade" mode="in-out" appear>
+          <Board
+            :country="board.country"
+            :letter="board.letter"
+            :color="board.color"
+            :flag="board.flag"
+          />
+        </transition>
         <transition name="slide-fade" mode="in-out">
           <div class="infos" v-if="Object.keys(sinestResult).length > 0">
             <SingleLine header="Marca" :content="sinestResult.marca" />
             <SingleLine header="Modelo" :content="sinestResult.modelo" />
             <SingleLine header="Ano" :content="sinestResult.ano" />
             <SingleLine header="Cor" :content="sinestResult.cor" />
-            <SingleLine header="Município" :content="sinestResult.municipio" />
-            <SingleLine header="Estado" :content="sinestResult.uf" />
+            <SingleLine
+              header="Localidade"
+              :content="sinestResult.municipio + '/' + sinestResult.uf"
+            />
           </div>
         </transition>
       </div>
       <div class="content_container">
-        <form class="form">
+        <form class="form" v-on:submit.prevent="formSubmit">
           <InputTxt
-            :label="inputPlate.label"
+            label="Digite uma placa"
             :color="inputPlate.color"
             :placeholder="inputPlate.placeholder"
             :pattern="inputPlate.pattern"
             :required="true"
-            v-on:keyup="getInputValue"
-            @submitInput="submit"
+            v-on:keyup="getValue"
             :focusable="true"
-            tip="Sequência alfanumérica de 7 digítos"
+            :tip="inputPlate.label"
           />
           <div class="input__container">
             <label for="radios_group">Tipo de veículo</label>
-            <div name="radios_group" class="radios_group">
+            <div name="radios_group" class="radios_group" role="radiogroup">
               <Radio
                 v-for="(radio, values) in radios"
                 :key="(radio, values)"
@@ -44,11 +55,12 @@
                 :checked="radio.checked"
                 group="cartype"
                 v-on:click="setPlateColor"
+                v-on:keyup.enter="setPlateColor"
               />
             </div>
           </div>
           <div class="input__container">
-            <Button value="Adicionar" :disabled="buttonDisabled" v-on:click="submit" />
+            <Button value="Salvar" :disabled="buttonDisabled" v-on:click="formSubmit" />
           </div>
           <transition name="slide-fade" mode="in-out">
             <Message
@@ -56,11 +68,13 @@
               :title="message.title"
               :color="message.color"
               :text="message.text"
+              role="alert"
             />
           </transition>
         </form>
       </div>
-    </div>
+    </main>
+    <Saving :contents="plates" />
   </div>
 </template>
 
@@ -71,6 +85,7 @@ import SingleLine from "./SingleLine";
 import Message from "./Message";
 import Button from "./Button";
 import InputTxt from "./InputTxt";
+import Saving from "./Saving";
 
 //jsons
 import Countries from "../data/Countries.json";
@@ -87,7 +102,8 @@ export default {
     Radio,
     SingleLine,
     Message,
-    Button
+    Button,
+    Saving
   },
   data() {
     return {
@@ -99,8 +115,8 @@ export default {
       },
       inputPlate: {
         placeholder: "ABC1D23",
-        pattern: "^[a-zA-Z]{3}[0-9]{1}[a-zA-Z][0-9]{2}$",
-        label: "Digite uma placa",
+        pattern: "[a-zA-Z]{3}[0-9]{1}[a-zA-Z][0-9]{2}",
+        label: "Sequência alfanumérica de 7 dígitos",
         color: "#000"
       },
       buttonDisabled: true,
@@ -123,11 +139,11 @@ export default {
     };
   },
   methods: {
-    getInputValue(inputValue) {
-      let result = inputValue.toUpperCase();
+    getValue(input) {
+      let result = input.toUpperCase();
       if (result.length == 0) {
         this.board.letter = this.inputPlate.placeholder;
-        this.setInput("Digite uma placa", "NORMAL");
+        this.setInput("Sequência alfanumérica de 7 dígitos", "NORMAL");
       } else {
         if (JSON.stringify(this.getCountry(result)) != JSON.stringify({})) {
           let country = this.getCountry(result);
@@ -139,7 +155,7 @@ export default {
           this.getPlateInfo(country.country, result);
         } else {
           this.buttonDisabled = true;
-          this.setInput("Valor incorreto", "ERROR");
+          this.setInput("O valor não corresponde a nenhum país", "ERROR");
         }
       }
     },
@@ -190,18 +206,22 @@ export default {
         this.sinestResult = {};
       }
     },
-    submit() {
-      //console.log(value);
-      if (this.plates.includes(this.board.letter)) {
+    formSubmit() {
+      let value = this.board.letter;
+
+      if (this.plates.includes(value)) {
         this.sendMessage("ERRO", "Valor repetido", "ERROR");
+      } else if (value.length == 0) {
+        this.sendMessage("CUIDADO", "Valor vazio", "ALERT");
       } else {
-        this.plates.push(this.board.letter);
-        this.sendMessage(
-          "Concluído",
-          "Valor adicionado com sucesso",
-          "SUCESSFUL"
-        );
+        this.plates.push(value);
+        this.sendMessage("Concluído", "Valor salvo com sucesso", "SUCESSFUL");
+        this.setInput("Sequência alfanumérica de 7 dígitos", "NORMAL");
+        this.$emit("clean");
+        this.buttonDisabled = true;
+        this.getPlateInfo("", "");
       }
+
       console.log(this.plates);
     }
   }
@@ -210,15 +230,26 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-@font-face {
-  font-family: "Reg Plate"; /*a name to be used later*/
-  src: url("../assets/reg_plate_UK.ttf"); /*URL to font*/
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: #232121;
+  letter-spacing: -1px;
 }
 
-h1 {
-  font-family: Reg Plate;
+mark {
+  color: #232121;
+  padding: 0 5px;
+  background-color: #ccb82d;
+  border-radius: 2px;
+  box-shadow: 2px 3px 1px #00000045;
+}
+
+.text-center {
   text-align: center;
-  opacity: 0.5;
 }
 
 .content {
@@ -240,6 +271,12 @@ h1 {
   flex-flow: column;
 }
 
+@media print {
+  .form {
+    display: none;
+  }
+}
+
 .radios_group {
   margin-top: 10px;
   display: flex;
@@ -248,9 +285,15 @@ h1 {
 
 .input__container {
   padding: 4px;
-  margin-top: 10px;
+  margin-top: 20px;
   display: flex;
   flex-flow: column nowrap;
+}
+
+.input__container > label {
+  font-weight: 500;
+  letter-spacing: -1.2px;
+  margin-bottom: 4px;
 }
 
 /** miscelania */

@@ -28,6 +28,7 @@ export default {
   color: #fff;
   cursor: pointer;
   outline: none;
+  border: 2px solid rgba(0, 0, 0, 0);
   border-radius: 10px;
   transition: all 0.25s ease-in-out;
   box-shadow: 0 0 0 0 #00000045;
@@ -41,5 +42,9 @@ export default {
   background-color: #738ed8;
   cursor: not-allowed;
   color: #ddd;
+}
+
+.button:focus {
+  border: 2px solid #fff;
 }
 </style>

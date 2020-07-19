@@ -4,7 +4,7 @@
       <div class="mercosul"></div>
       <div class="country">{{country}}</div>
       <div class="flag">
-        <img :src="require('../assets/' + flag)" />
+        <img :src="require('../assets/' + flag)" alt="Flag" />
       </div>
     </div>
     <div class="board_letter">
@@ -26,6 +26,11 @@ export default {
 </script>
 
 <style scoped>
+@font-face {
+  font-family: "Reg Plate"; /*a name to be used later*/
+  src: url("../assets/reg_plate_UK.ttf"); /*URL to font*/
+}
+
 .board {
   font-family: "Reg Plate";
   box-shadow: inset 0px 0px 1px 3px #00000045, 0px 0px 0 1px #4a4848,
@@ -64,7 +69,7 @@ export default {
   display: flex;
   justify-content: space-between;
   font-variant: all-small-caps;
-  text-shadow: 0px 1px 1px black;
+  /*text-shadow: 0px 1px 1px black;*/
 }
 
 .board .first_part .mercosul,
@@ -116,5 +121,25 @@ export default {
   background-clip: text;
   transition: all 0.5s ease-in-out;
   color: #000;
+}
+
+@media print {
+  .board > .first_part {
+    filter: invert(100%);
+    color: #fff;
+  }
+  .board .first_part .mercosul {
+    background-size: contain;
+    background-image: url("../assets/logoMercosul-min.png");
+    filter: invert(10%);
+  }
+
+  .board .first_part .flag {
+    filter: invert(100%);
+  }
+
+  .board .first_part .country {
+    filter: invert(50%);
+  }
 }
 </style>

@@ -8,10 +8,10 @@
 import Main from "./components/Main.vue";
 
 export default {
-	name: "App",
-	components: {
-		Main
-	}
+  name: "App",
+  components: {
+    Main
+  }
 };
 </script>
 
@@ -26,10 +26,20 @@ body,
 html {
   margin: 0;
   padding: 0;
+  min-height: 100%;
 }
 
 body {
   background-color: #e6e6e6;
+  background-image: radial-gradient(
+    50em at 97px 70%,
+    #cbd0dc 30%,
+    transparent 20%
+  );
+  background-size: 12em 100%;
+  background-position: 0px 20em;
+  background-repeat: repeat-x;
+  color: #232121;
 }
 
 body::-webkit-scrollbar {
@@ -52,7 +62,7 @@ body::-webkit-scrollbar-thumb {
   flex-wrap: wrap;
   padding: 1em;
   transition: all 0.5s ease-in-out;
-  font-family: "Segoe UI Light";
+  font-family: Inter, system-ui, -apple-system, "Roboto Regular", "Segoe UI";
   align-items: center;
 }
 </style>

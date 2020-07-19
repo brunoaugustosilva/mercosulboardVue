@@ -1,9 +1,11 @@
 <template>
   <div class="radio">
     <input
+      role="radio"
       :id="id"
       type="radio"
       :name="group"
+      tabindex="0"
       :value="value"
       :checked="checked"
       v-on:click="setPlateColor"
@@ -28,10 +30,7 @@ export default {
       Type: String,
       required: true
     },
-    checked: {
-      Type: Boolean,
-      default: false
-    }
+    checked: Boolean
   },
   data() {
     return {
@@ -52,7 +51,9 @@ export default {
 }
 
 input[type="radio"] {
-  display: none;
+  display: block;
+  opacity: 0;
+  position: absolute;
   transition: color 0.5s cubic-bezier(0, 0.85, 1, 0.29);
   font-weight: bold;
 }
@@ -64,6 +65,7 @@ input[type="radio"] + label {
   color: #8c8c8c;
   border-right: 0;
   font-weight: 600;
+  letter-spacing: -0.7px;
   border: 2px solid transparent;
   transition: all 0.25s ease-in-out;
   box-shadow: 0 0 0 0 #00000045;
@@ -78,5 +80,42 @@ input[type="radio"]:checked + label {
   color: #fff;
   background-color: #0038a8;
   box-shadow: 9px 9px 8px 6px #00000045;
+}
+
+input[type="radio"] + label::after {
+  content: "\2194";
+  position: absolute;
+  margin-top: -30px;
+  margin-left: 0px;
+  opacity: 0;
+  letter-spacing: 1.2px;
+  padding: 1px 6px;
+  font-size: 1em;
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 8px;
+}
+
+input[type="radio"]:focus + label::after {
+  animation: atribute 1s ease-in;
+}
+
+label {
+  outline: 2px solid rgba(0, 0, 0, 0);
+}
+
+label:focus {
+  outline: 2px solid #8c8c8c;
+}
+
+@keyframes atribute {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
 }
 </style>

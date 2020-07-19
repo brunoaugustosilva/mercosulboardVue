@@ -22,10 +22,11 @@ export default {
   opacity: 0.8;
   padding: 1em;
   justify-content: space-between;
-  border-bottom: 1px solid gray;
+  border-bottom: 1px solid #80808052;
 }
 
 .singleLineHeader {
-  font-weight: 800;
+  font-weight: 700;
+  letter-spacing: -1.2px;
 }
 </style>

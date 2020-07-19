@@ -1,26 +1,32 @@
 <template>
   <div class="input__container">
-    <label for="text" v-bind:style="{color: color}">
+    <label for="text">
       {{label}}
       <span v-show="required">*</span>
     </label>
     <input
       type="text"
       name="text"
-      v-on:keyup="getInputValue"
+      v-on:keyup="getValue"
+      v-model="value"
       id="text"
       :placeholder="placeholder"
-      v-model="value"
-      v-on:keyup.enter="submitInput"
       :pattern="pattern"
       v-bind:style="{borderBottomColor: color}"
       :autofocus="focusable"
       :required="required"
+      autocapitalize="on"
+      spellcheck="false"
+      autocomplete="false"
       lang="pt-BR"
       :title="label"
       maxlength="7"
     />
-    <span class="input_tip">{{tip}}</span>
+    <div class="tip__column">
+      <transition name="slide-fade">
+        <span class="input_tip" :key="tip" v-bind:style="{color: color}">{{tip}}</span>
+      </transition>
+    </div>
   </div>
 </template>
 
@@ -43,26 +49,26 @@ export default {
     };
   },
   methods: {
-    getInputValue(input) {
+    getValue(input) {
       let inputValue = input.target.value;
       this.$emit("keyup", inputValue);
-      return inputValue;
+      this.value = input.target.value;
     },
-    submitInput(input) {
-      let inputValue = input.target.value;
+    clean() {
       this.value = "";
-      this.$emit("submitInput", inputValue);
     }
+  },
+  created() {
+    this.$parent.$on("clean", this.clean);
   }
 };
 </script>
 
 <style scoped>
-.input__container {
-  padding: 4px;
-  margin-top: 10px;
-  display: flex;
-  flex-flow: column nowrap;
+label {
+  font-weight: 500;
+  letter-spacing: -1.2px;
+  margin-bottom: 4px;
 }
 
 input[type="text"] {
@@ -75,10 +81,12 @@ input[type="text"] {
   text-transform: uppercase;
   background-color: transparent;
   border-bottom: 1px solid gray;
+  transition: color 0.8s ease-in;
   outline: none;
 }
 
 input[type="text"]::placeholder {
+  font-family: "Segoe UI Light";
   font-size: 1em;
 }
 
@@ -93,8 +101,27 @@ input:-webkit-autofill {
   font-weight: 300 !important;
 }
 
+.tip__column {
+  display: flex;
+}
+
 .input_tip {
-  opacity: 0.6;
+  font-family: "Segoe UI Light";
   font-size: 0.7em;
+  position: absolute;
+}
+
+.slide-fade-enter-active {
+  transition: all 0.3s ease;
+}
+.slide-fade-leave-active {
+  transition: all 0.5s cubic-bezier(1, 0.5, 0.8, 1);
+}
+
+.slide-fade-enter,
+.slide-fade-leave-to
+/* .slide-fade-leave-active for <2.1.8 */ {
+  transform: translateX(10px);
+  opacity: 0;
 }
 </style>
