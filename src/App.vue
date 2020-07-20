@@ -55,6 +55,28 @@ body::-webkit-scrollbar-thumb {
   background-color: #fff;
 }
 
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: #232121;
+  letter-spacing: -1px;
+}
+
+mark {
+  color: #232121;
+  padding: 0 5px;
+  background-color: #ccb82d;
+  border-radius: 2px;
+  box-shadow: 2px 3px 1px #00000045;
+}
+
+.text-center {
+  text-align: center;
+}
+
 #app {
   display: flex;
   align-items: stretch;

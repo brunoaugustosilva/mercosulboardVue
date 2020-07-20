@@ -15,7 +15,7 @@ export default {
 
 <style scoped>
 .boardCard {
-  padding: 12px 8px;
+  padding: 8px 8px;
   border-radius: 6px;
   margin: 0 10px;
   background-color: #fff;

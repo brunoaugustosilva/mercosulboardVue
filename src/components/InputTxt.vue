@@ -51,8 +51,8 @@ export default {
   methods: {
     getValue(input) {
       let inputValue = input.target.value;
-      this.$emit("keyup", inputValue);
       this.value = input.target.value;
+      this.$emit("keyup", inputValue);
     },
     clean() {
       this.value = "";

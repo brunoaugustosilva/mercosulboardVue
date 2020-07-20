@@ -1,0 +1,76 @@
+{
+    "pt-BR": {
+        "titleDescription": "Adicione placas mercosul do seu país",
+        "radiosLabel": {
+            "Label1": "Particular",
+            "Label2": "Aluguel e auto-escola",
+            "Label3": "Administração pública",
+            "Label4": "Diplomático",
+            "Label5": "Especial",
+            "Label6": "Coleção"
+        },
+        "tips": {
+            "Label1": "Sequência alfanumérica de 7 dígitos",
+            "Label2": "Formato reconhecido",
+            "Label3": "O valor não corresponde a nenhum país"
+        },
+        "messages": {
+            "ERROR": {
+                "title": "ERRO",
+                "message": "Valor repetido"
+            },
+            "WARNING": {
+                "title": "CUIDADO",
+                "message": "Valor vazio"
+            },
+            "SUCESSFUL": {
+                "title": "CONCLUÍDO",
+                "message": "Valor adicionado com sucesso"
+            }
+        },
+        "labels": {
+            "inputTxt": "Digite uma placa",
+            "radioGroup": "Tipo de veiculo"
+        },
+        "buttons": {
+            "save": "Salvar"
+        }
+    },
+    "en-US": {
+        "titleDescription": "Add mercosul plates for your country",
+        "radiosLabel": {
+            "Label1": "Private",
+            "Label2": "Renting and driving school",
+            "Label3": "Public administration",
+            "Label4": "Diplomatic",
+            "Label5": "Special",
+            "Label6": "Colection"
+        },
+        "tips": {
+            "Label1": "Alphanumeric 7 digits sequence",
+            "Label2": "Format reconigzed",
+            "Label3": "The value doesn't matching any country"
+        },
+        "messages": {
+            "ERROR": {
+                "title": "ERROR",
+                "message": "Value repeating"
+            },
+            "WARNING": {
+                "title": "WARNING",
+                "message": "Empty value"
+            },
+            "SUCESSFUL": {
+                "title": "READY",
+                "message": "Value added sucessfuly"
+            }
+        },
+        "labels": {
+            "inputTxt": "Type a board",
+            "radioGroup": "Vehicle type"
+        },
+        "buttons": {
+            "save": "Save"
+        }
+    }
+}

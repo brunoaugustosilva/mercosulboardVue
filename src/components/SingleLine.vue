@@ -1,6 +1,9 @@
 <template>
   <div id="singleLine">
-    <div class="singleLineHeader">{{header}}</div>
+    <div class="singleLineHeader">
+      <font-awesome-icon :icon="icon" :title="header" />
+      <span v-show="label == true">{{header}}</span>
+    </div>
     <div class="singleLineContent">{{content}}</div>
   </div>
 </template>
@@ -10,7 +13,9 @@ export default {
   name: "SingleLine",
   props: {
     header: String,
-    content: String
+    content: String,
+    icon: String,
+    label: Boolean
   }
 };
 </script>

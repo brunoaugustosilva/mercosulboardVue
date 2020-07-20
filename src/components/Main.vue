@@ -4,7 +4,7 @@
       <hgroup>
         <h1 class="text-center">MERCOSUL BOARD</h1>
         <h2 class="text-center">
-          Adding mercosul plates for
+          Add mercosul plates for
           <mark>your country!</mark>
         </h2>
       </hgroup>
@@ -21,11 +21,12 @@
         </transition>
         <transition name="slide-fade" mode="in-out">
           <div class="infos" v-if="Object.keys(sinestResult).length > 0">
-            <SingleLine header="Marca" :content="sinestResult.marca" />
-            <SingleLine header="Modelo" :content="sinestResult.modelo" />
-            <SingleLine header="Ano" :content="sinestResult.ano" />
-            <SingleLine header="Cor" :content="sinestResult.cor" />
+            <SingleLine icon="building" header="Marca" :content="sinestResult.marca" />
+            <SingleLine icon="car" header="Modelo" :content="sinestResult.modelo" />
+            <SingleLine icon="calendar-alt" header="Ano" :content="sinestResult.ano" />
+            <SingleLine icon="paint-brush" header="Cor" :content="sinestResult.cor" />
             <SingleLine
+              icon="map-marker"
               header="Localidade"
               :content="sinestResult.municipio + '/' + sinestResult.uf"
             />
@@ -35,7 +36,7 @@
       <div class="content_container">
         <form class="form" v-on:submit.prevent="formSubmit">
           <InputTxt
-            label="Digite uma placa"
+            :label="strings.labels.inputTxt"
             :color="inputPlate.color"
             :placeholder="inputPlate.placeholder"
             :pattern="inputPlate.pattern"
@@ -45,7 +46,7 @@
             :tip="inputPlate.label"
           />
           <div class="input__container">
-            <label for="radios_group">Tipo de veículo</label>
+            <label for="radios_group">{{strings.labels.radioGroup}}</label>
             <div name="radios_group" class="radios_group" role="radiogroup">
               <Radio
                 v-for="(radio, values) in radios"
@@ -60,7 +61,11 @@
             </div>
           </div>
           <div class="input__container">
-            <Button value="Salvar" :disabled="buttonDisabled" v-on:click="formSubmit" />
+            <Button
+              :value="strings.buttons.save"
+              :disabled="buttonDisabled"
+              v-on:click="formSubmit"
+            />
           </div>
           <transition name="slide-fade" mode="in-out">
             <Message
@@ -72,9 +77,9 @@
             />
           </transition>
         </form>
+        <Saving :contents="plates" />
       </div>
     </main>
-    <Saving :contents="plates" />
   </div>
 </template>
 
@@ -90,6 +95,7 @@ import Saving from "./Saving";
 //jsons
 import Countries from "../data/Countries.json";
 import Colors from "../data/Colors.json";
+import Strings from "../data/Strings.json";
 
 //api do sinest
 import Sinest from "sinesp-api";
@@ -107,34 +113,13 @@ export default {
   },
   data() {
     return {
-      board: {
-        country: "Brasil",
-        flag: "flagBrasil-min.png",
-        letter: "ABC1D23",
-        color: "#000000"
-      },
-      inputPlate: {
-        placeholder: "ABC1D23",
-        pattern: "[a-zA-Z]{3}[0-9]{1}[a-zA-Z][0-9]{2}",
-        label: "Sequência alfanumérica de 7 dígitos",
-        color: "#000"
-      },
+      strings: Strings["en-US"],
+      board: {},
+      inputPlate: {},
       buttonDisabled: true,
-      message: {
-        title: "",
-        color: "",
-        text: "",
-        show: false
-      },
+      message: { show: false },
       plates: [],
-      radios: [
-        { name: "Particular", value: "#000000", checked: true },
-        { name: "Aluguel e auto-escola", value: "#c8102e", checked: false },
-        { name: "Administração publica", value: "#0033a0", checked: false },
-        { name: "Diplomático", value: "#f2a900", checked: false },
-        { name: "Especial", value: "#007a53", checked: false },
-        { name: "Coleção", value: "#968f8b", checked: false }
-      ],
+      radios: [],
       sinestResult: {}
     };
   },
@@ -143,19 +128,21 @@ export default {
       let result = input.toUpperCase();
       if (result.length == 0) {
         this.board.letter = this.inputPlate.placeholder;
-        this.setInput("Sequência alfanumérica de 7 dígitos", "NORMAL");
+        this.setInput(this.strings.tips.Label1, "NORMAL");
+        this.buttonDisabled = true;
+        this.getPlateInfo("", "");
       } else {
         if (JSON.stringify(this.getCountry(result)) != JSON.stringify({})) {
           let country = this.getCountry(result);
           this.board.letter = result;
 
-          this.setInput("Formato reconhecido", "SUCESSFUL");
+          this.setInput(this.strings.tips.Label2, "SUCESSFUL");
           this.setBoard(country);
           this.buttonDisabled = result.length < 7;
           this.getPlateInfo(country.country, result);
         } else {
           this.buttonDisabled = true;
-          this.setInput("O valor não corresponde a nenhum país", "ERROR");
+          this.setInput(this.strings.tips.Label3, "ERROR");
         }
       }
     },
@@ -208,50 +195,55 @@ export default {
     },
     formSubmit() {
       let value = this.board.letter;
+      const MESSAGES = this.strings.messages;
+      const ERROR = MESSAGES.ERROR;
+      const WARNING = MESSAGES.WARNING;
+      const SUCESSFUL = MESSAGES.SUCESSFUL;
 
       if (this.plates.includes(value)) {
-        this.sendMessage("ERRO", "Valor repetido", "ERROR");
+        this.sendMessage(ERROR.title, ERROR.message, "ERROR");
       } else if (value.length == 0) {
-        this.sendMessage("CUIDADO", "Valor vazio", "ALERT");
+        this.sendMessage(WARNING.title, WARNING.message, "ALERT");
       } else {
         this.plates.push(value);
-        this.sendMessage("Concluído", "Valor salvo com sucesso", "SUCESSFUL");
-        this.setInput("Sequência alfanumérica de 7 dígitos", "NORMAL");
+        this.sendMessage(SUCESSFUL.title, SUCESSFUL.message, "SUCESSFUL");
+        this.setInput(this.strings.tips.Label1, "NORMAL");
         this.$emit("clean");
         this.buttonDisabled = true;
         this.getPlateInfo("", "");
       }
-
-      console.log(this.plates);
     }
+  },
+  created() {
+    let strings = this.strings;
+    let radios = strings.radiosLabel;
+
+    this.radios = [
+      { name: radios.Label1, value: "#000000", checked: true },
+      { name: radios.Label2, value: "#c8102e", checked: false },
+      { name: radios.Label3, value: "#0033a0", checked: false },
+      { name: radios.Label4, value: "#f2a900", checked: false },
+      { name: radios.Label5, value: "#007a53", checked: false },
+      { name: radios.Label6, value: "#968f8b", checked: false }
+    ];
+    this.inputPlate = {
+      placeholder: "ABC1D23",
+      pattern: "[a-zA-Z]{3}[0-9]{1}[a-zA-Z][0-9]{2}",
+      label: strings.tips.Label1,
+      color: "#000"
+    };
+    this.board = {
+      country: "Brasil",
+      flag: "flagBrasil-min.png",
+      letter: "ABC1D23",
+      color: "#000000"
+    };
   }
 };
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  color: #232121;
-  letter-spacing: -1px;
-}
-
-mark {
-  color: #232121;
-  padding: 0 5px;
-  background-color: #ccb82d;
-  border-radius: 2px;
-  box-shadow: 2px 3px 1px #00000045;
-}
-
-.text-center {
-  text-align: center;
-}
-
 .content {
   display: flex;
   flex-flow: row wrap;

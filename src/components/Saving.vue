@@ -1,6 +1,11 @@
 <template>
   <div class="saving">
-    <button class="button" v-on:click="show = !show">Placas salvas</button>
+    <button class="button" v-on:click="show = !show">
+      <transition name="icon-fade" mode="out-in">
+        <font-awesome-icon v-if="show == true" icon="eye" />
+        <font-awesome-icon v-else-if="show == false" icon="eye-slash" />
+      </transition>
+    </button>
     <transition name="slide">
       <div class="content" v-if="show">
         <BoardCard v-for="content in contents" :key="content" :content="content" />
@@ -30,12 +35,13 @@ export default {
 
 <style scoped>
 .saving {
-  position: relative;
+  margin-top: 20px;
   display: flex;
 }
 
 .button {
-  padding: 12px 16px;
+  padding: 8px 0px;
+  min-width: 60px;
   background-color: #c8ceda;
   font-family: "Segoe UI Light";
   font-weight: bold;
@@ -75,6 +81,18 @@ export default {
 }
 .slide-enter, .slide-leave-to /* .fade-leave-active em versões anteriores a 2.1.8 */ {
   transform: translateY(30px);
+  opacity: 0;
+}
+
+.icon-fade-enter-active {
+  transition: all 0.3s ease;
+}
+.icon-fade-leave-active {
+  transition: all 0.8s cubic-bezier(1, 0.5, 0.8, 1);
+}
+.sicon-fade-enter, .icon-fade-leave-to
+/* .slide-fade-leave-active below version 2.1.8 */ {
+  transform: translateX(10px);
   opacity: 0;
 }
 </style>
