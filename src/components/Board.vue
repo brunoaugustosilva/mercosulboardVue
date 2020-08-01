@@ -29,6 +29,8 @@ export default {
 @font-face {
   font-family: "Reg Plate"; /*a name to be used later*/
   src: url("../assets/reg_plate_UK.ttf"); /*URL to font*/
+  font-style: normal;
+  font-display: swap;
 }
 
 .board {

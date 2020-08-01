@@ -1,6 +1,6 @@
 <template>
   <div class="saving">
-    <button class="button" v-on:click="show = !show">
+    <button class="button" aria-label="view plates" v-on:click="show = !show">
       <transition name="icon-fade" mode="out-in">
         <font-awesome-icon v-if="show == true" icon="eye" />
         <font-awesome-icon v-else-if="show == false" icon="eye-slash" />

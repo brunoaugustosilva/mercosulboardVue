@@ -1,5 +1,12 @@
 <template>
-  <input class="button" type="button" :value="value" v-on:click="submit" :disabled="disabled" />
+  <input
+    aria-label="save"
+    class="button"
+    type="button"
+    :value="value"
+    v-on:click="submit"
+    :disabled="disabled"
+  />
 </template>
 
 <script>
